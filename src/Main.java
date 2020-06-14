@@ -22,10 +22,10 @@ public class Main {
 	public static ArrayList<Stop> getStopsList(ArrayList<String[]> stops) {
 		ArrayList<Stop> stops_list = new ArrayList<Stop>();
 		for (int i = 0; i < stops.size(); i++) {
-			int stop_id = Integer.parseInt(stops.get(0)[0]);
-			String stop_name = stops.get(0)[2];
-			double stop_lat = Double.valueOf(stops.get(0)[5]);
-			double stop_lon = Double.valueOf(stops.get(0)[6]);
+			int stop_id = Integer.parseInt(stops.get(i)[0]);
+			String stop_name = stops.get(i)[2];
+			double stop_lat = Double.valueOf(stops.get(i)[5]);
+			double stop_lon = Double.valueOf(stops.get(i)[6]);
 			Stop stop = new Stop(stop_id, stop_name, stop_lat, stop_lon);
 			stops_list.add(stop);
 		}
@@ -34,7 +34,8 @@ public class Main {
 
 	public static Stop getStopById(int stopId, ArrayList<Stop> stops) {
 		for (Stop s : stops) {
-			if (stopId == s.stop_id) {
+			int stop_id = s.stop_id;
+			if (stop_id == stopId) {
 				return s;
 			}
 		}
@@ -43,7 +44,7 @@ public class Main {
 
 	public static double calculDistanceByGEO(double lat1, double lon1, double lat2, double lon2) {
 		// TODO
-
+		
 		return 0;
 	}
 
@@ -51,39 +52,39 @@ public class Main {
 
 		// Each complete trip
 		ArrayList<String[]> stop_times = rc.readCSV("stop_times.csv");
-		int cur_trip_id = 0;
 		ArrayList<Integer> stop_list = new ArrayList<Integer>();
 		ArrayList<ArrayList<Integer>> line_list = new ArrayList<ArrayList<Integer>>();
 		for (int i = 0; i < stop_times.size(); i++) {
-			int stop_times_trip_id = Integer.parseInt(stop_times.get(i)[0]);
 			int stop_times_stop_id = Integer.parseInt(stop_times.get(i)[3]);
-			if (cur_trip_id != stop_times_trip_id) {
-				cur_trip_id = stop_times_trip_id;
+			int stop_sequence = Integer.parseInt(stop_times.get(i)[4]);
+
+			if (stop_sequence == 1) {
 				line_list.add(stop_list);
 				stop_list = new ArrayList<Integer>();
 			}
 			stop_list.add(stop_times_stop_id);
 		}
+		line_list.remove(0);
 
 		// There are many repetition in stop_time, remove duplicate
 		line_list = removeDuplicates(line_list);
 
 		// Unweighed graph, store in a Map( Edge, distance=0.0 )
-		int first_stop = 0;
-		int second_stop = 0;
-		Map<Edge, Double> map = new HashMap<Edge, Double>();
+		int first_stop_id = 0;
+		int second_stop_id = 0;
+		ArrayList<Edge> edge_list = new ArrayList<Edge>();
 		for (ArrayList<Integer> stop_list_i : line_list) {
 			for (int stop_id : stop_list_i) {
 				System.out.print(stop_id + " ");
-				if (first_stop == 0) {
-					first_stop = stop_id;
+				if (first_stop_id == 0) {
+					first_stop_id = stop_id;
 					continue;
 				}
-				second_stop = stop_id;
+				second_stop_id = stop_id;
 				// add Edge
-				Edge edge = new Edge(first_stop, second_stop);
-				map.put(edge, 0.0);
-				first_stop = stop_id;
+				Edge edge = new Edge(first_stop_id, second_stop_id, 0.0);
+				edge_list.add(edge);
+				first_stop_id = stop_id;
 			}
 			System.out.println();
 		}
@@ -94,20 +95,23 @@ public class Main {
 		ArrayList<String[]> stops = rc.readCSV("stops.csv");
 		ArrayList<Stop> stops_list = getStopsList(stops);
 		// Update distance in map
-		for (Edge edge : map.keySet()) {
+		int index = 0;
+		for (Edge edge : edge_list) {
 			int stop1_id = edge.stop1_id;
 			Stop stop1 = getStopById(stop1_id, stops_list);
 			int stop2_id = edge.stop2_id;
 			Stop stop2 = getStopById(stop2_id, stops_list);
 			if (stop1 != null && stop2 != null) {
-				double distance = calculDistanceByGEO(stop1.getStop_lat(), stop1.getStop_lon(), stop2.getStop_lat(), stop2.getStop_lon());
-				map.put(edge, distance);
+				edge.distance = calculDistanceByGEO(stop1.getStop_lat(), stop1.getStop_lon(), stop2.getStop_lat(),
+						stop2.getStop_lon());
+				edge_list.set(index, edge);
 			}
+			index++;
 		}
 
 		// print
-		for (Edge edge : map.keySet()) {
-//			System.out.println(edge.stop1_id + " - " + edge.stop2_id + ": distance " + map.get(edge));
+		for (Edge edge : edge_list) {
+//			System.out.println(edge.stop1_id + " - " + edge.stop2_id + ": distance " + edge.distance);
 		}
 	}
 }
