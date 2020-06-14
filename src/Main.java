@@ -31,6 +31,15 @@ public class Main {
 		}
 		return stops_list;
 	}
+	
+	public static Stop getStopById(int stopId, ArrayList<Stop> stop) {
+		for(Stop s:stop) {
+			if(stopId == s.stop_id) {
+				return s;
+			}
+		}
+		return null;
+	}
 
 	public static void main(String[] args) {
 
@@ -52,14 +61,12 @@ public class Main {
 
 		// There are many repetition in stop_time, remove duplicate
 		line_list = removeDuplicates(line_list);
-
-		// !处理stop相交问题
-		// Store in Map,  Map( Edge, distance=0 )
+		
+		// Unweighed graph, store in a Map( Edge, distance=0.0 )
 		int first_stop = 0;
 		int second_stop = 0;
-		Map map = new HashMap();
+		Map<Edge, Double> map = new HashMap<Edge, Double>();
 		for (ArrayList<Integer> stop_list_i : line_list) {
-			ArrayList<Integer> curr_stop_list = new ArrayList<Integer>();
 			for (int stop_id : stop_list_i) {
 				System.out.print(stop_id + " ");
 				if (first_stop == 0) {
@@ -67,15 +74,17 @@ public class Main {
 					continue;
 				}
 				second_stop = stop_id;
-				curr_stop_list.add(second_stop);
-				map.put(first_stop, curr_stop_list);
+				// add Edge
+				Edge edge = new Edge (first_stop, second_stop);
+				map.put(edge, 0.0);
 				first_stop = stop_id;
 			}
 			System.out.println();
 		}
 
 		// Weighted graph, Map( Edge, distance )
-		// Read Stop.csv
+		
+		// Read Stop.csv for getting position
 		ArrayList<String[]> stops = rc.readCSV("stops.csv");
 		ArrayList<Stop> stops_list = getStopsList(stops);
 		// for example: first stop
@@ -86,13 +95,14 @@ public class Main {
 		System.out.println("stop_lon: " + stop.getStop_lon());
 		
 		// Update distance in map
-//		for(Edge edge : map.keySet()){
-//			Stop stop1 = edge.stop1;
-//			Stop stop2 = edge.stop2;
-//			double distance = Math.sqrt(Math.pow((stop1.getStop_lat() - stop2.getStop_lat()),2) - Math.pow((stop1.getStop_lon() - stop2.getStop_lon()),2));
-//			map.put(edge, distance);
-//		}
-		
+		for( Edge edge : map.keySet()){
+			int stop1_id = edge.stop1_id;
+			Stop stop1 = getStopById(stop1_id, stops_list);
+			int stop2_id = edge.stop2_id;
+			Stop stop2 = getStopById(stop2_id, stops_list);
+			double distance = Math.sqrt(Math.pow((stop1.getStop_lat() - stop2.getStop_lat()),2) - Math.pow((stop1.getStop_lon() - stop2.getStop_lon()),2));
+			map.put(edge, distance);
+		}
 		
 	}
 }
