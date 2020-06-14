@@ -97,7 +97,6 @@ public class Main {
 				weighed_edge_list.add(edge);
 			}
 		}
-		uwGraph.stopsNum = stops.size();
 
 		// print
 		for (Edge edge : weighed_edge_list) {
@@ -105,8 +104,8 @@ public class Main {
 		}
 
 		// BFS shortest path in unweighted Graph
-//				int test_stop_id = 10;
-//				List<Integer> stopVisitedList = BFSShortestPath.bfs( test_stop_id, ug);
+		int test_stop_id = 10;
+		List<Integer> stopVisitedList = BFSShortestPath.bfs( test_stop_id, uwGraph);
 
 		// Build Weighted Graph
 		// ...

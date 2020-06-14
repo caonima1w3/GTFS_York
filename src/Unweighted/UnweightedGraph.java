@@ -2,16 +2,11 @@ package Unweighted;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.Stack;
-
-import Model.Edge;
 
 public class UnweightedGraph {
 
-	public int stopsNum;
+	public int curr_stop_id = 0;
 	public Map<Integer, ArrayList<Integer>> uw_map = new HashMap<Integer, ArrayList<Integer>>();
 
 	public UnweightedGraph(ArrayList<ArrayList<Integer>> trips_list) {
