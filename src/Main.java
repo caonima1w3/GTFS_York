@@ -5,6 +5,8 @@ import java.util.Map;
 
 import Model.Edge;
 import Model.Stop;
+import Unweighted.BFSShortestPath;
+import Unweighted.UnweightedGraph;
 
 public class Main {
 	static ReadCSV rc;
@@ -53,27 +55,28 @@ public class Main {
 		// Each complete trip
 		ArrayList<String[]> stop_times = rc.readCSV("stop_times.csv");
 		ArrayList<Integer> stop_list = new ArrayList<Integer>();
-		ArrayList<ArrayList<Integer>> line_list = new ArrayList<ArrayList<Integer>>();
+		ArrayList<ArrayList<Integer>> trips_list = new ArrayList<ArrayList<Integer>>();
 		for (int i = 0; i < stop_times.size(); i++) {
 			int stop_times_stop_id = Integer.parseInt(stop_times.get(i)[3]);
 			int stop_sequence = Integer.parseInt(stop_times.get(i)[4]);
 
 			if (stop_sequence == 1) {
-				line_list.add(stop_list);
+				trips_list.add(stop_list);
 				stop_list = new ArrayList<Integer>();
 			}
 			stop_list.add(stop_times_stop_id);
 		}
-		line_list.remove(0);
+		trips_list.remove(0); // remove first empty element
 
 		// There are many repetition in stop_time, remove duplicate
-		line_list = removeDuplicates(line_list);
+		trips_list = removeDuplicates(trips_list);
 
-		// Unweighed graph, store in a Map( Edge, distance=0.0 )
+		// Unweighed graph
+		// Store in a List<Edge> which has (stop1_id,stop2_id, 0.0)
 		int first_stop_id = 0;
 		int second_stop_id = 0;
-		ArrayList<Edge> edge_list = new ArrayList<Edge>();
-		for (ArrayList<Integer> stop_list_i : line_list) {
+		ArrayList<Edge> unweighed_edge_list = new ArrayList<Edge>();
+		for (ArrayList<Integer> stop_list_i : trips_list) {
 			for (int stop_id : stop_list_i) {
 				System.out.print(stop_id + " ");
 				if (first_stop_id == 0) {
@@ -83,20 +86,22 @@ public class Main {
 				second_stop_id = stop_id;
 				// add Edge
 				Edge edge = new Edge(first_stop_id, second_stop_id, 0.0);
-				edge_list.add(edge);
+				unweighed_edge_list.add(edge);
 				first_stop_id = stop_id;
 			}
 			System.out.println();
 		}
-
-		// Weighted graph, Map( Edge, distance )
-
+	
+	
+		// Weighted graph
+		// List<Edge> which has (stop1_id,stop2_id, distance)
+		ArrayList<Edge> weighed_edge_list = unweighed_edge_list;
 		// Read Stop.csv for getting position
 		ArrayList<String[]> stops = rc.readCSV("stops.csv");
 		ArrayList<Stop> stops_list = getStopsList(stops);
 		// Update distance in map
 		int index = 0;
-		for (Edge edge : edge_list) {
+		for (Edge edge : weighed_edge_list) {
 			int stop1_id = edge.stop1_id;
 			Stop stop1 = getStopById(stop1_id, stops_list);
 			int stop2_id = edge.stop2_id;
@@ -104,14 +109,29 @@ public class Main {
 			if (stop1 != null && stop2 != null) {
 				edge.distance = calculDistanceByGEO(stop1.getStop_lat(), stop1.getStop_lon(), stop2.getStop_lat(),
 						stop2.getStop_lon());
-				edge_list.set(index, edge);
+				weighed_edge_list.set(index, edge);
 			}
 			index++;
 		}
 
 		// print
-		for (Edge edge : edge_list) {
+		for (Edge edge : weighed_edge_list) {
 //			System.out.println(edge.stop1_id + " - " + edge.stop2_id + ": distance " + edge.distance);
 		}
+		
+		
+		// Build Unweighted Graph
+		UnweightedGraph ug = new UnweightedGraph(stops.size());
+		
+		// BFS shortest path in unweighted Graph
+		int test_stop_id = 10;
+		List<Integer> stopVisitedList = BFSShortestPath.bfs( test_stop_id, ug);
+		
+		
+		// Build Weighted Graph
+		// ...
+		
+		
+		
 	}
 }

@@ -2,7 +2,6 @@ package Model;
 
 public class Edge {
 	
-
 	public int stop1_id;
 	public int stop2_id;
 	public double distance;
