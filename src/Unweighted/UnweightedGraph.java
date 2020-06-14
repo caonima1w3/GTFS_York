@@ -23,13 +23,14 @@ public class UnweightedGraph {
 				}
 				second_stop_id = stop_id;
 
-				// add into map,2¸öÏà»¥
+				// Add into map
 				ArrayList<Integer> stop1_neighbors = uw_map.get(first_stop_id);
-				// Add in list if it doesnt existe in list.
+				
 				if (stop1_neighbors == null) {
 					stop1_neighbors = new ArrayList<Integer>();
 					stop1_neighbors.add(second_stop_id);
 				}
+				// Add in list if it doesnt existe in list.
 				if (stop1_neighbors != null && !stop1_neighbors.contains(second_stop_id)) {
 					stop1_neighbors.add(second_stop_id);
 				}

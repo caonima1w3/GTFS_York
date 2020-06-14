@@ -104,9 +104,16 @@ public class Main {
 		}
 
 		// BFS shortest path in unweighted Graph
-		int test_stop_id = 10;
-		List<Integer> stopVisitedList = BFSShortestPath.bfs( test_stop_id, uwGraph);
-
+		int test_start_stop_id = 7310;
+		int test_target_stop_id = 1974;
+//		ArrayList<Integer> bfsVisitedPath = BFSShortestPath.bfs( test_start_stop_id, test_target_stop_id,uwGraph);
+//		
+//		System.out.println("=========== (BFS shortest path) 7310 to 1974 ===========");
+//		for(int i:bfsVisitedPath) {
+//			System.out.print(i+ " ");
+//		}
+//		System.out.println();
+		
 		// Build Weighted Graph
 		// ...
 	}
