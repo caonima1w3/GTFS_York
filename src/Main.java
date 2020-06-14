@@ -124,8 +124,8 @@ public class Main {
 		UnweightedGraph ug = new UnweightedGraph(stops.size());
 		
 		// BFS shortest path in unweighted Graph
-		int test_stop_id = 10;
-		List<Integer> stopVisitedList = BFSShortestPath.bfs( test_stop_id, ug);
+//		int test_stop_id = 10;
+//		List<Integer> stopVisitedList = BFSShortestPath.bfs( test_stop_id, ug);
 		
 		
 		// Build Weighted Graph
