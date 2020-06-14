@@ -87,13 +87,6 @@ public class Main {
 		// Read Stop.csv for getting position
 		ArrayList<String[]> stops = rc.readCSV("stops.csv");
 		ArrayList<Stop> stops_list = getStopsList(stops);
-		// for example: first stop
-		Stop stop = stops_list.get(0);
-		System.out.println("stop_id: " + stop.getStop_id());
-		System.out.println("stop_name: " + stop.getStop_name());
-		System.out.println("stop_lat: " + stop.getStop_lat());
-		System.out.println("stop_lon: " + stop.getStop_lon());
-		
 		// Update distance in map
 		for( Edge edge : map.keySet()){
 			int stop1_id = edge.stop1_id;
