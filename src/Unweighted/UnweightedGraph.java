@@ -11,17 +11,13 @@ import Model.Edge;
 
 public class UnweightedGraph {
 
-	int stopsNum;
-	int curr_stop_id = 0;
-	List<Integer>[] adj;
+	public int stopsNum;
+	public Map<Integer, ArrayList<Integer>> uw_map = new HashMap<Integer, ArrayList<Integer>>();
 
-	public UnweightedGraph(int stopsNum, ArrayList<ArrayList<Integer>> trips_list) {
-		this.stopsNum = stopsNum;
-		
+	public UnweightedGraph(ArrayList<ArrayList<Integer>> trips_list) {
 		// Map (stop_id, {stop1_id, stop2_id})
 		int first_stop_id = 0;
 		int second_stop_id = 0;
-		Map<Integer, ArrayList<Integer>> uw_map = new HashMap<Integer, ArrayList<Integer>>();
 
 		for (ArrayList<Integer> stop_list_i : trips_list) {
 			for (int stop_id : stop_list_i) {
@@ -31,7 +27,7 @@ public class UnweightedGraph {
 					continue;
 				}
 				second_stop_id = stop_id;
-				
+
 				// add into map,2¸öÏà»¥
 				ArrayList<Integer> stop1_neighbors = uw_map.get(first_stop_id);
 				// Add in list if it doesnt existe in list.
@@ -48,7 +44,6 @@ public class UnweightedGraph {
 			System.out.println();
 		}
 
-
 		for (int stop_id : uw_map.keySet()) {
 			System.out.print(stop_id + " neighbors: ");
 			ArrayList<Integer> list = uw_map.get(stop_id);
@@ -58,7 +53,5 @@ public class UnweightedGraph {
 			System.out.println();
 		}
 	}
-	
-
 
 }
