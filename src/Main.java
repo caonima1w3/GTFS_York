@@ -46,12 +46,14 @@ public class Main {
 
 	public static double calculDistanceByGEO(double lat1, double lon1, double lat2, double lon2) {
 		// TODO
-		
+
 		return 0;
 	}
 
 	public static void main(String[] args) {
-
+		
+		
+		// Read stop_times.csv
 		// Each complete trip
 		ArrayList<String[]> stop_times = rc.readCSV("stop_times.csv");
 		ArrayList<Integer> stop_list = new ArrayList<Integer>();
@@ -68,31 +70,16 @@ public class Main {
 		}
 		trips_list.remove(0); // remove first empty element
 
-		// There are many repetition in stop_time, remove duplicate
+		// There are many repetition in stop_time, remove duplicate trip
 		trips_list = removeDuplicates(trips_list);
 
-		// Unweighed graph
-		// Store in a List<Edge> which has (stop1_id,stop2_id, 0.0)
-		int first_stop_id = 0;
-		int second_stop_id = 0;
-		ArrayList<Edge> unweighed_edge_list = new ArrayList<Edge>();
-		for (ArrayList<Integer> stop_list_i : trips_list) {
-			for (int stop_id : stop_list_i) {
-				System.out.print(stop_id + " ");
-				if (first_stop_id == 0) {
-					first_stop_id = stop_id;
-					continue;
-				}
-				second_stop_id = stop_id;
-				// add Edge
-				Edge edge = new Edge(first_stop_id, second_stop_id, 0.0);
-				unweighed_edge_list.add(edge);
-				first_stop_id = stop_id;
-			}
-			System.out.println();
-		}
-	
-	
+		// Build unweighed graph
+		UnweightedGraph uwGraph = new UnweightedGraph(stopsNum, trips_list);
+		
+		
+		
+		
+				
 		// Weighted graph
 		// List<Edge> which has (stop1_id,stop2_id, distance)
 		ArrayList<Edge> weighed_edge_list = unweighed_edge_list;
@@ -116,22 +103,19 @@ public class Main {
 
 		// print
 		for (Edge edge : weighed_edge_list) {
-//			System.out.println(edge.stop1_id + " - " + edge.stop2_id + ": distance " + edge.distance);
+//					System.out.println(edge.stop1_id + " - " + edge.stop2_id + ": distance " + edge.distance);
 		}
 		
 		
 		// Build Unweighted Graph
-		UnweightedGraph ug = new UnweightedGraph(stops.size());
+		UnweightedGraph ug = new UnweightedGraph(stops.size(), unweighed_edge_list);
 		
 		// BFS shortest path in unweighted Graph
-//		int test_stop_id = 10;
-//		List<Integer> stopVisitedList = BFSShortestPath.bfs( test_stop_id, ug);
+//				int test_stop_id = 10;
+//				List<Integer> stopVisitedList = BFSShortestPath.bfs( test_stop_id, ug);
 		
 		
 		// Build Weighted Graph
-		// ...
-		
-		
-		
+		// ...		
 	}
 }
