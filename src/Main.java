@@ -3,6 +3,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import Model.Edge;
 import Model.Stop;
 
 public class Main {
@@ -53,7 +54,7 @@ public class Main {
 		line_list = removeDuplicates(line_list);
 
 		// !处理stop相交问题
-		// Store in Map, [stop, [all neighbors]]
+		// Store in Map,  Map( Edge, distance=0 )
 		int first_stop = 0;
 		int second_stop = 0;
 		Map map = new HashMap();
@@ -73,7 +74,7 @@ public class Main {
 			System.out.println();
 		}
 
-		// Weighted graph
+		// Weighted graph, Map( Edge, distance )
 		// Read Stop.csv
 		ArrayList<String[]> stops = rc.readCSV("stops.csv");
 		ArrayList<Stop> stops_list = getStopsList(stops);
@@ -84,10 +85,13 @@ public class Main {
 		System.out.println("stop_lat: " + stop.getStop_lat());
 		System.out.println("stop_lon: " + stop.getStop_lon());
 		
-		// Distance
-		// double distance = Math.pow((stop1.getStop_lat() - stop2.getStop_lat()),2) - Math.pow((stop2.getStop_lon() - stop2.getStop_lon()),2)
-		
-		// Add distance to Edge
+		// Update distance in map
+//		for(Edge edge : map.keySet()){
+//			Stop stop1 = edge.stop1;
+//			Stop stop2 = edge.stop2;
+//			double distance = Math.sqrt(Math.pow((stop1.getStop_lat() - stop2.getStop_lat()),2) - Math.pow((stop1.getStop_lon() - stop2.getStop_lon()),2));
+//			map.put(edge, distance);
+//		}
 		
 		
 	}
