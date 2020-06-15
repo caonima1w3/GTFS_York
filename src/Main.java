@@ -11,6 +11,11 @@ import Unweighted.UnweightedGraph;
 public class Main {
 	static ReadCSV rc;
 
+	/**
+	 *reads "stop_times.csv" file, which contains Times that a vehicle arrives at and departs from
+	 * individual stops for each trip. If stop_sequence is equal to 1 it means that new trip started.
+	 * @return
+	 */
 	public static ArrayList<ArrayList<Integer>> getTripList() {
 		// Read stop_times.csv, find each complete trip
 		ArrayList<String[]> stop_times = rc.readCSV("stop_times.csv");
@@ -33,6 +38,11 @@ public class Main {
 		return trips_list;
 	}
 
+	/**
+	 *
+	 * @param list of the existing trips
+	 * @return  return list of the trips without duplicates
+	 */
 	public static ArrayList<ArrayList<Integer>> removeDuplicates(ArrayList<ArrayList<Integer>> list) {
 		ArrayList<ArrayList<Integer>> newList = new ArrayList<ArrayList<Integer>>();
 		for (ArrayList<Integer> element : list) {
@@ -66,10 +76,30 @@ public class Main {
 		return null;
 	}
 
+	/**
+	 * Calculate distance between two points in latitude and longitude.
+	 * we do not take into account the  height so el1 and el2 is equal to 0. lat1, lon1
+	 * are the start point lat2, lon2 are the end points.
+	 * @returns Distance in Meters
+	 */
 	public static double calculDistanceByGEO(double lat1, double lon1, double lat2, double lon2) {
-		// TODO
+		double el1 = 0 ;
+		double el2 = 0;
+		final int R = 6371; // Radius of the earth
 
-		return 0;
+		double latDistance = Math.toRadians(lat2 - lat1);
+		double lonDistance = Math.toRadians(lon2 - lon1);
+		double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+				+ Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+				* Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+		double distance = R * c * 1000; // convert to meters
+
+		double height = el1 - el2;
+		distance = Math.pow(distance, 2) + Math.pow(height, 2);
+
+		return Math.sqrt(distance);
+
 	}
 
 	public static void main(String[] args) {
